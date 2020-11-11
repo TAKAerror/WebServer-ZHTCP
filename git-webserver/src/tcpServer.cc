@@ -14,7 +14,7 @@
 #include <sys/mman.h>
 using std::placeholders::_1;
 using std::placeholders::_2;
-static const char * basepath="/home/hp-2/git-webserver/pages";
+static const char * basepath="/home/hp-2/zhtcp/git-webserver/pages";
 void zhtcp::server::SocketData::bind() 
 {
     int ret = ::bind(listenfd_, (struct sockaddr*)&mAddr, sizeof(mAddr));
