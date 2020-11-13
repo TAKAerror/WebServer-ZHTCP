@@ -5,7 +5,7 @@
  #include<unordered_map>
  #include<algorithm>
  #include<iostream>
- #include"utils.cpp"
+ #include"utils.h"
  #include"../include/epoll.h"
  std::unordered_map<std::string, zhtcp::server::request::HTTP_HEADER> header_map = {
         {"HOST",                      zhtcp::server::request::Host},
@@ -64,10 +64,10 @@
       return status::BAD_REQUEST;
   *version++='\0';
   if(strncasecmp(version,"HTTP/1.1",8)==0)
-     request.version_=request::HTTP_10;
-  else
+     request.version_=request::HTTP_11;
+  else if(strncasecmp(version,"HTTP/1.0",8)==0)
   {
-    std::cout<<"error http version"<<std::endl;
+    request.version_=request::HTTP_10;
   }
   if(strncasecmp(uri,"http://",7)==0)
   {

@@ -85,6 +85,7 @@ void zhtcp::server::TcpServer::do_request(/*SocketData socketdata*/int connfd,in
             std::cout<<"clinet close connection"<<std::endl;
             break;//当对端关闭连接时，套接字处在可读状态，必须通过read==0来判断，如果==0，关闭套接字，从epoll移除
         }
+        std::cout<<buffer<<std::endl;
         read_index+=date_read;
         zhtcp::server::HttpRequest request;
         zhtcp::server::HttpResponse response;
@@ -180,13 +181,13 @@ void zhtcp::server::TcpServer::send_r(HttpResponse &response,int &connfd)
      }
   int filefd = ::open(response.filepath.c_str(), O_RDONLY);
     if (filefd < 0) {
-        sprintf(head, "%sContent-length: %d\r\n\r\n", head, strlen(internal_error));
+        sprintf(head, "%sContent-Length: %d\r\n\r\n", head, strlen(internal_error));
         sprintf(head, "%s%s", head, internal_error);
         ::send(connfd, head, strlen(head), 0);
         return;
     }
 
-    sprintf(head,"%sContent-length: %d\r\n\r\n", head, stat_buffer.st_size);
+    sprintf(head,"%sContent-Length: %d\r\n\r\n", head, stat_buffer.st_size);
     std::cout<<head<<std::endl;
     ::send(connfd, head, strlen(head), 0);//发送应答报文
     void *mapbuf = mmap(NULL, stat_buffer.st_size, PROT_READ, MAP_PRIVATE, filefd, 0);

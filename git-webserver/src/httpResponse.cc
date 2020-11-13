@@ -30,11 +30,13 @@ void zhtcp::server::HttpResponse::create_response(char * head)
        sprintf(head,"HTTP/1.0 %d %s\r\n",mstate,sstate.c_str());
     else
     {
-          sprintf(head,"HTTP/1.1 %d %s\r\n",mstate,sstate.c_str());
+       sprintf(head,"HTTP/1.1 %d %s\r\n",mstate,sstate.c_str());
     }
     for(auto it=mHeaders.begin();it!=mHeaders.end();it++)
        sprintf(head,"%s%s: %s\r\n",head,it->first.c_str(),it->second.c_str());
-    sprintf(head, "%sContent-type: %s\r\n", head, mime.c_str());
+    sprintf(head, "%sContent-Type: %s\r\n", head, mime.c_str());
+     if(version_==request::HTTP_11)//暂时不支持长连接
+      sprintf(head, "%sConnection: close\r\n", head);
 
     
 }

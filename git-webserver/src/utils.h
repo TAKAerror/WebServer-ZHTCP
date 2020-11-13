@@ -3,7 +3,7 @@
 //
 
 
-
+#pragma once
 #include <string>
 //删除一个string前后的空格、\t
 std::string& ltrim(std::string &str) {
