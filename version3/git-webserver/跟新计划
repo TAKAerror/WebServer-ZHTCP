@@ -1,0 +1,6 @@
+1、添加eventloop、currentthead，跟新epoll；整合单线程与多线程，实现长短连接
+2、添加thread，分离关于线程的工作
+3、添加channel，分离套接字
+4、添加log日志
+5、添加timer，实现长连接定时保活与超时关闭
+6、添加buf
