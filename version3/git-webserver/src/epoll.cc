@@ -72,6 +72,7 @@ void zhtcp::Epoll::update(zhtcp::Channel * channel)
 		
      printf("channel noevent\n");
 	 close(channel->fd());
+	 channelmap_.erase(channel->fd());
 	 epoll_event event ;
 	 event.events = channel->event();
      event.data.ptr = channel;
