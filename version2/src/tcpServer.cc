@@ -94,12 +94,12 @@ void zhtcp::server::TcpServer::do_request(/*SocketData socketdata*//*int connfd,
             if ((errno == EAGAIN) || (errno == EWOULDBLOCK))
                break;
             std::cout<<"error recv"<<std::endl;
-            connection_state=-1;
+           args->state=-1;
             break;
            }
         else if(date_read==0)
         {
-            connection_state=0;
+            args->state=0;
             std::cout<<"clinet close connection"<<std::endl;
             break;//当对端关闭连接时，套接字处在可读状态，必须通过read==0来判断，如果==0，关闭套接字，从epoll移除
         }

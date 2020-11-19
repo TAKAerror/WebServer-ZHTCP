@@ -98,7 +98,12 @@ void zhtcp::Epoll::poll(int listenfd)
 					clients.erase(std::remove(clients.begin(), clients.end(), connfd), clients.end());
 					continue;
 				}
-
+				else
+				    {close(connfd);
+					event = events[i];
+					epoll_ctl(epollfd_, EPOLL_CTL_DEL, connfd, &event);
+					clients.erase(std::remove(clients.begin(), clients.end(), connfd), clients.end());
+					}
 				std::cout<<buf;
 				write(connfd, buf, strlen(buf));
 			}
