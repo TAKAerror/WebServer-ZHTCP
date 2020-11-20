@@ -17,6 +17,29 @@
 using std::placeholders::_1;
 using std::placeholders::_2;
 static const char * basepath="/home/hp-2/Downloads/zhtcp-test/git-webserver/pages";
+char zhtcp::server::INDEX_PAGE[] = "<!DOCTYPE html>\n"
+                    "<html>\n"
+                    "<head>\n"
+                    "    <title>Welcome to LC WebServer!</title>\n"
+                    "    <style>\n"
+                    "        body {\n"
+                    "            width: 35em;\n"
+                    "            margin: 0 auto;\n"
+                    "            font-family: Tahoma, Verdana, Arial, sans-serif;\n"
+                    "        }\n"
+                    "    </style>\n"
+                    "</head>\n"
+                    "<body>\n"
+                    "<h1>Welcome to LC WebServer!</h1>\n"
+                    "<p>If you see this page, the lc webserver is successfully installed and\n"
+                    "    working. </p>\n"
+                    "\n"
+                    "<p>For online documentation and support please refer to\n"
+                    "    <a href=\"https://github.com/TAKAerror?tab=repositories\">LC WebServer</a>.<br/>\n"
+                    "\n"
+                    "<p><em>Thank you for using LC WebServer.</em></p>\n"
+                    "</body>\n"
+                    "</html>";
 void zhtcp::server::SocketData::bind() 
 {
     int ret = ::bind(listenfd_, (struct sockaddr*)&mAddr, sizeof(mAddr));
@@ -231,7 +254,7 @@ void zhtcp::server::TcpServer::send_r(HttpResponse &response,int &connfd)
   response.create_response(head);
   const char *internal_error = "Internal Error";
   struct stat stat_buffer;
-  if(stat(response.filepath.c_str(),&stat_buffer)<0)
+  if(response.sstate!="OK")
      {
          sprintf(head,"%sContent-Length: %d\r\n\r\n",head,strlen(internal_error));
          sprintf(head, "%s%s", head, internal_error);
@@ -239,45 +262,14 @@ void zhtcp::server::TcpServer::send_r(HttpResponse &response,int &connfd)
         ::send(connfd, head, strlen(head), 0);
         return;
      }
-  int filefd = ::open(response.filepath.c_str(), O_RDONLY);
-    if (filefd < 0) {
-        sprintf(head, "%sContent-Length: %d\r\n\r\n", head, strlen(internal_error));
-        sprintf(head, "%s%s", head, internal_error);
+    else
+    {
+        sprintf(head,"%sContent-Length: %d\r\n\r\n",head,strlen(INDEX_PAGE));
+        sprintf(head,"%s%s",head,zhtcp::server::INDEX_PAGE);
+        std::cout<<head<<std::endl;
         ::send(connfd, head, strlen(head), 0);
         return;
     }
-
-    sprintf(head,"%sContent-Length: %d\r\n\r\n", head, stat_buffer.st_size);
-    std::cout<<head<<std::endl;
-    ::send(connfd, head, strlen(head), 0);//发送应答报文
-    /*char INDEX_PAGE[] = "<!DOCTYPE html>\n"
-                    "<html>\n"
-                    "<head>\n"
-                    "    <title>Welcome to LC WebServer!</title>\n"
-                    "    <style>\n"
-                    "        body {\n"
-                    "            width: 35em;\n"
-                    "            margin: 0 auto;\n"
-                    "            font-family: Tahoma, Verdana, Arial, sans-serif;\n"
-                    "        }\n"
-                    "    </style>\n"
-                    "</head>\n"
-                    "<body>\n"
-                    "<h1>Welcome to LC WebServer!</h1>\n"
-                    "<p>If you see this page, the lc webserver is successfully installed and\n"
-                    "    working. </p>\n"
-                    "\n"
-                    "<p>For online documentation and support please refer to\n"
-                    "    <a href=\"https://github.com/MarvinLe/WebServer\">LC WebServer</a>.<br/>\n"
-                    "\n"
-                    "<p><em>Thank you for using LC WebServer.</em></p>\n"
-                    "</body>\n"
-                    "</html>";*/
-    void *mapbuf = mmap(NULL, stat_buffer.st_size, PROT_READ, MAP_PRIVATE, filefd, 0);
-    ::send(connfd, mapbuf,stat_buffer.st_size, 0);//发送文件内容
-    munmap(mapbuf, stat_buffer.st_size);
-    //send(connfd,INDEX_PAGE,sizeof(INDEX_PAGE),0);
-    close(filefd);
     return;
 
       

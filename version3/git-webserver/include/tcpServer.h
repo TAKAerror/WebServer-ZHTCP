@@ -24,7 +24,7 @@ namespace zhtcp
 }*/
     namespace server
     {
-      
+        extern char INDEX_PAGE[];
         class SocketData
         {
           public:
